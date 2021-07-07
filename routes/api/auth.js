@@ -26,10 +26,8 @@ router.get('/', auth, async (req, res) => {
 // @access   Public
 router.post(
   '/',
-  [
-    check('email', 'Please include a valid email..').isEmail(),
-    check('password', 'Password is required').exists(),
-  ],
+  check('email', 'Please include a valid email..').isEmail(),
+  check('password', 'Password is required').exists(),
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -37,7 +35,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
 
     try {
       // See if user exist
@@ -68,7 +66,7 @@ router.post(
       jwt.sign(
         payload,
         config.get('jwtSecret'),
-        { expiresIn: 36000 },
+        { expiresIn: '5 days' },
         (err, token) => {
           if (err) throw err;
           res.json({ token });

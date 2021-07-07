@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
+const normalize = require('normalize-url');
 
 const User = require('../../models/User');
 
@@ -13,14 +14,11 @@ const User = require('../../models/User');
 // @access   Public
 router.post(
   '/',
-  [
-    check('name', 'Name is required').not().isEmpty(),
-    check('email', 'Please include a valid email..').isEmail(),
-    check(
-      'password',
-      'Please enter password with 7 or more character'
-    ).isLength({ min: 7 }),
-  ],
+  check('name', 'Name is required').not().isEmpty(),
+  check('email', 'Please include a valid email..').isEmail(),
+  check('password', 'Please enter password with 7 or more character').isLength({
+    min: 7,
+  }),
   async (req, res) => {
     const errors = validationResult(req);
 
@@ -40,11 +38,15 @@ router.post(
           .json({ errors: [{ msg: 'User already exist' }] });
       }
       //Get users gravatar
-      const avatar = gravatar.url(email, {
-        s: '200',
-        r: 'pg',
-        d: 'mm',
-      });
+      const avatar = normalize(
+        gravatar.url(email, {
+          s: '200',
+          r: 'pg',
+          d: 'mm',
+        }),
+        { forceHttps: true }
+      );
+
       user = new User({
         name,
         email,

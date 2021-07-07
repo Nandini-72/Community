@@ -1,4 +1,0 @@
-{
-    "mongoURI":"mongodb+srv://nan123:nan123@devconnector.dqq5x.mongodb.net/SocialMediaDatabase?retryWrites=true&w=majority",
-    "jwtSecret":"ItzNan"
-}
